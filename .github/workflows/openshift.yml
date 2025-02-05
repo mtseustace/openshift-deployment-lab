@@ -142,7 +142,25 @@ jobs:
     - name: my deployment 
       run: |
         export IMAGE=${{ steps.push-image.outputs.registry-path }}
+        export OPENSHIFT_NAMESPACE=${{ env.OPENSHIFT_NAMESPACE }}
+        export APP_NAME=${{ env.APP_NAME }}
+
+        
         echo ${{ steps.push-image.outputs.registry-path }}
-        sed -i 's|\${IMAGE}|'"$IMAGE"'|g' pod.yaml
-        oc apply -f pod.yaml
-        oc get pods 
+        sed -i 's|\${IMAGE}|'"$IMAGE"'|g' deployment/deployment.yaml deployment/service.yaml
+        sed -i 's|\${APP_NAME}|'"$APP_NAME"'|g' deployment/deployment.yaml deployment/service.yaml
+        sed -i 's|\${OPENSHIFT_NAMESPACE}|'"$OPENSHIFT_NAMESPACE"'|g' deployment/deployment.yaml deployment/service.yaml
+        oc apply -f deployment/deployment.yaml -f deployment/service.yaml
+        oc get pods
+
+    - name: create route
+      run: | 
+        sed -i 's|\${APP_NAME}|'"$APP_NAME"'|g' deployment/route.yaml
+        sed -i 's|\${OPENSHIFT_NAMESPACE}|'"$OPENSHIFT_NAMESPACE"'|g' deployment/route.yaml
+        oc apply -f deployment/route.yaml
+
+    - name: get route
+      run: | 
+        echo $(oc get route $${{ env.APP_NAME }} -n ${{ env.OPENSHIFT_NAMESPACE }} -o jsonpath='{.spec.host}')
+        
+    
