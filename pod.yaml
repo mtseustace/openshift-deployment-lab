@@ -4,6 +4,8 @@ metadata:
   name: nginx-pod
   namespace: mtseustace-dev
 spec:
+  imagePullSecrets:
+  - name: ghcr-pull-secret
   containers:
     - name: nginx
       image: ${IMAGE}
