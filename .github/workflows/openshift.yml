@@ -139,7 +139,7 @@ jobs:
         insecure_skip_tls_verify: true
         namespace: ${{ env.OPENSHIFT_NAMESPACE }}
 
-    - name: my deployment
+    - name: My Deployment
       run: |
         echo ${{ steps.push-image.outputs.registry-path }}
         oc get pods
