@@ -1,0 +1,11 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: ${APP_NAME}
+  namespace: ${OPENSHIFT_NAMESPACE}
+spec:
+  to:
+    kind: Service
+    name: ${APP_NAME}
+  port:
+    targetPort: 8080
