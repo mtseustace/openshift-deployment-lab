@@ -4,7 +4,12 @@ metadata:
   name: ${APP_NAME}
   namespace: ${OPENSHIFT_NAMESPACE}
 spec:
-  replicas: 1
+  replicas: 8
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
   selector:
     matchLabels:
       app: ${APP_NAME}
@@ -18,5 +23,6 @@ spec:
       containers:
       - name: ${APP_NAME}
         image: ${IMAGE}
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
